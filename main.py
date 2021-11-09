@@ -1,16 +1,15 @@
 '''
 Oliver Erdmann
 11/4/21
-Picture resolution and sharpness changer
+Picture filters
 '''
 
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog as fd
-from tkinter import messagebox
+from PIL.ImageFilter import (EDGE_ENHANCE_MORE, BLUR)
 from PIL import Image
-from PIL.ImageFilter import (EDGE_ENHANCE)
 
 root = tk.Tk()
 root.geometry("500x300")
@@ -27,20 +26,21 @@ open_button.grid(row=0, column=0)
 
 def loop_img():
    global size
+   global image_res
    my_image = Image.open(filename)
-   im_resized = my_image.resize(size, Image.ANTIALIAS, EDGE_ENHANCE)
-   im_resized.show()
-
-   def on_closing():
-      if messagebox.askokcancel("Quit", "Do you want to quit?"):
-         root.destroy()
-
-   root.protocol("WM_DELETE_WINDOW", on_closing)
+   image_res = my_image.resize(size, Image.ANTIALIAS)
+   image_res.show()
 
 def sharpen_img():
-    my_image = Image.open(filename)
-    img_sharp = my_image.filter(EDGE_ENHANCE)
-    img_sharp.show()
+    im_sharp = image_res.filter(EDGE_ENHANCE_MORE)
+    im_sharp.show()
+
+def blur_img():
+    im_blur = image_res.filter(BLUR)
+    im_blur.show()
+
+blur = ttk.Button(root, text='Blur', command=blur_img)
+blur.grid(row=9, column=0)
 
 sharpen = ttk.Button(root, text='Sharpen', command=sharpen_img)
 sharpen.grid(row=8, column=0)
@@ -79,6 +79,7 @@ R5 = Radiobutton(root, text="720p", value=4, command=radio_5)
 R5.grid(row=5, column=0)
 R6 = Radiobutton(root, text="1080p", value=5, command=radio_6)
 R6.grid(row=6, column=0)
+
 
 
 
