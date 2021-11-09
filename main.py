@@ -1,7 +1,7 @@
 '''
 Oliver Erdmann
 11/4/21
-Picture resolution changer
+Picture resolution and sharpness changer
 '''
 
 import tkinter as tk
