@@ -1,33 +1,52 @@
+'''
+Oliver Erdmann
+11/4/21
+Picture resolution changer
+'''
+
+import tkinter as tk
 from tkinter import *
-import random
-from PIL import Image
 from tkinter import ttk
 from tkinter import filedialog as fd
+from tkinter import messagebox
+from PIL import Image
+from PIL.ImageFilter import (EDGE_ENHANCE)
 
-root=Tk()
-root.geometry("300x300")
+root = tk.Tk()
+root.geometry("500x300")
 
 def select_files():
     global my_image
     global filename
-    filetypes = (('image files', '*.jpg .png'),('All files', '.*'))
+    filetypes = (('image files', '*.jpg .png'), ('All files', '.*'))
     filename = fd.askopenfilename(title='Open files', initialdir='/', filetypes=filetypes)
     my_image = Image.open(filename)
-    #loop_img(my_image)
+
+open_button = ttk.Button(root, text='Open Files', command=select_files)
+open_button.grid(row=0, column=0)
 
 def loop_img():
+   global size
+   my_image = Image.open(filename)
+   im_resized = my_image.resize(size, Image.ANTIALIAS, EDGE_ENHANCE)
+   im_resized.show()
+
+   def on_closing():
+      if messagebox.askokcancel("Quit", "Do you want to quit?"):
+         root.destroy()
+
+   root.protocol("WM_DELETE_WINDOW", on_closing)
+
+def sharpen_img():
     my_image = Image.open(filename)
-    #size = 1920, 1080
-    #im = Image.open(select_files)
-    im_resized = my_image.resize(size, Image.ANTIALIAS)
-    #im_resized.save(select_files, "PNG")
-    im_resized.show()
+    img_sharp = my_image.filter(EDGE_ENHANCE)
+    img_sharp.show()
 
-res = ttk.Button(root,text='Change resolution',command=loop_img)
+sharpen = ttk.Button(root, text='Sharpen', command=sharpen_img)
+sharpen.grid(row=8, column=0)
+
+res = ttk.Button(root, text='Change resolution', command=loop_img)
 res.grid(row=7, column=0)
-
-open_button = ttk.Button(root,text='Open Files',command=select_files)
-open_button.grid(row=0, column=0)
 
 def radio_1():
     global size
@@ -60,6 +79,7 @@ R5 = Radiobutton(root, text="720p", value=4, command=radio_5)
 R5.grid(row=5, column=0)
 R6 = Radiobutton(root, text="1080p", value=5, command=radio_6)
 R6.grid(row=6, column=0)
+
 
 
 root.mainloop()
