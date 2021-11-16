@@ -7,42 +7,36 @@ Picture filters
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
-from tkinter import filedialog as fd
-from PIL.ImageFilter import (EDGE_ENHANCE_MORE, BLUR)
 from PIL import Image
+import notmain
 
 root = tk.Tk()
 root.geometry("500x300")
 
-def select_files():
-    global my_image
-    global filename
-    filetypes = (('image files', '*.jpg .png'), ('All files', '.*'))
-    filename = fd.askopenfilename(title='Open files', initialdir='/', filetypes=filetypes)
-    my_image = Image.open(filename)
+def get_file_name():
+    global file_name
+    file_name = notmain.select_files()
 
-open_button = ttk.Button(root, text='Open Files', command=select_files)
-open_button.grid(row=0, column=0)
+def passimage1():
+    notmain.blur_img(image_res)
+
+def passimage2():
+    notmain.sharpen_img(image_res)
 
 def loop_img():
-   global size
    global image_res
-   my_image = Image.open(filename)
+   global size
+   my_image = Image.open(file_name)
    image_res = my_image.resize(size, Image.ANTIALIAS)
    image_res.show()
 
-def sharpen_img():
-    im_sharp = image_res.filter(EDGE_ENHANCE_MORE)
-    im_sharp.show()
+open_button = ttk.Button(root, text='Open Files', command=get_file_name)
+open_button.grid(row=0, column=0)
 
-def blur_img():
-    im_blur = image_res.filter(BLUR)
-    im_blur.show()
-
-blur = ttk.Button(root, text='Blur', command=blur_img)
+blur = ttk.Button(root, text='Blur', command=passimage1)
 blur.grid(row=9, column=0)
 
-sharpen = ttk.Button(root, text='Sharpen', command=sharpen_img)
+sharpen = ttk.Button(root, text='Sharpen', command=passimage2)
 sharpen.grid(row=8, column=0)
 
 res = ttk.Button(root, text='Change resolution', command=loop_img)
@@ -79,8 +73,6 @@ R5 = Radiobutton(root, text="720p", value=4, command=radio_5)
 R5.grid(row=5, column=0)
 R6 = Radiobutton(root, text="1080p", value=5, command=radio_6)
 R6.grid(row=6, column=0)
-
-
 
 
 root.mainloop()
